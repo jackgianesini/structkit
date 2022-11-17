@@ -12,16 +12,22 @@ type structator struct {
 	mapping       []reflect.Value
 	bypass        map[string]any
 	slice         bool
+	ptr           bool
 }
 
 func From(source any, fields ...string) any {
 	m := new(structator)
 
-	m.source = reflect.Indirect(reflect.ValueOf(source))
+	m.source = reflect.ValueOf(source)
 	if !m.source.IsValid() {
 		return source
 	}
 
+	m.ptr = m.source.Kind() == reflect.Ptr
+	if m.ptr {
+		m.source = m.source.Elem()
+	}
+	
 	if m.source.Kind() == reflect.Slice && m.source.Type().Elem().Kind() != reflect.Struct {
 		return source
 	}
@@ -129,6 +135,10 @@ func (m *structator) parseStruct() any {
 
 	for i := 0; i < newStruct.NumField(); i++ {
 		newStruct.Field(i).Set(m.mapping[i])
+	}
+
+	if m.ptr {
+		return newStruct.Addr().Interface()
 	}
 
 	return newStruct.Interface()
