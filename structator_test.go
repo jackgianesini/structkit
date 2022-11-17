@@ -2,6 +2,7 @@ package structator
 
 import (
 	"github.com/stretchr/testify/suite"
+	"log"
 	"reflect"
 	"testing"
 )
@@ -30,6 +31,21 @@ func (test *StructatorTestSuite) TestWithStruct() {
 	test.True(val.FieldByName("Value").IsValid())
 	test.False(val.FieldByName("Message").IsValid())
 	test.False(val.FieldByName("Counter").IsValid())
+
+	log.Printf("%+v", result)
+}
+
+func (test *StructatorTestSuite) TestWithPtrStruct() {
+	payload := Foo{Value: "foo", Struct: Bar{Value: "bar"}}
+	result := From(&payload, "Value", "Value", "Struct.Bar", "NotFound")
+
+	val := reflect.ValueOf(result)
+	test.Equal(val.Elem().NumField(), 2)
+	test.True(val.Elem().FieldByName("Value").IsValid())
+	test.False(val.Elem().FieldByName("Message").IsValid())
+	test.False(val.Elem().FieldByName("Counter").IsValid())
+
+	log.Printf("%+v", result)
 }
 
 func (test *StructatorTestSuite) TestWithSlice() {
