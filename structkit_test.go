@@ -1,4 +1,4 @@
-package structator
+package structkit
 
 import (
 	"github.com/stretchr/testify/suite"
