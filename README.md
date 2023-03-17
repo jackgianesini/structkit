@@ -8,7 +8,7 @@
 
 # Overview
 
-Structator is simple tool for copy specific fields a new struct, including metadata.
+StructKit is simple tool for copy specific fields a new struct, including metadata.
 
 ## Features
 
@@ -23,7 +23,7 @@ Structator is simple tool for copy specific fields a new struct, including metad
 package main
 
 import (
-    "github.com/lab210-dev/structator"
+    "github.com/lab210-dev/structkit"
     "log"
 )
 
@@ -40,8 +40,7 @@ type Bar struct {
 
 func main() {
     payload := Foo{Value: "foo", Struct: Bar{Value: "bar"}}
-    log.Printf("%v", structator.From(payload, "Value", "Struct.Bar")) 
-    // print: {Value:foo Struct:{Value:bar}}
+    log.Printf("%v", structkit.From(payload, "Value", "Struct.Bar"))
 }
 ```
 

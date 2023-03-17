@@ -1,4 +1,4 @@
-package structator
+package structkit
 
 import (
 	"reflect"
@@ -27,7 +27,7 @@ func From(source any, fields ...string) any {
 	if m.ptr {
 		m.source = m.source.Elem()
 	}
-	
+
 	if m.source.Kind() == reflect.Slice && m.source.Type().Elem().Kind() != reflect.Struct {
 		return source
 	}
