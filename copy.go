@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type structator struct {
+type cp struct {
 	fieldsFocused []string
 	source        reflect.Value
 	destination   []reflect.StructField
@@ -15,8 +15,8 @@ type structator struct {
 	ptr           bool
 }
 
-func From(source any, fields ...string) any {
-	m := new(structator)
+func Copy(source any, fields ...string) any {
+	m := new(cp)
 
 	m.source = reflect.ValueOf(source)
 	if !m.source.IsValid() {
@@ -47,7 +47,7 @@ func From(source any, fields ...string) any {
 	return m.parse()
 }
 
-func (m *structator) extract(parent string) (res []string) {
+func (m *cp) extract(parent string) (res []string) {
 	for _, value := range m.fieldsFocused {
 		s := strings.Split(value, ".")
 		if parent == s[0] {
@@ -57,7 +57,7 @@ func (m *structator) extract(parent string) (res []string) {
 	return
 }
 
-func (m *structator) buildField(field string, parent bool) {
+func (m *cp) buildField(field string, parent bool) {
 	field = strings.TrimSpace(field)
 	if _, ok := m.bypass[field]; ok {
 		return
@@ -72,7 +72,7 @@ func (m *structator) buildField(field string, parent bool) {
 
 	var newStructField reflect.StructField
 	if parent {
-		result := From(m.source.FieldByName(field).Interface(), m.extract(field)...)
+		result := Copy(m.source.FieldByName(field).Interface(), m.extract(field)...)
 		res := reflect.ValueOf(result)
 		newStructField = reflect.StructField{
 			Name:      fieldType.Name,
@@ -96,7 +96,7 @@ func (m *structator) buildField(field string, parent bool) {
 	m.mapping = append(m.mapping, m.source.FieldByName(field))
 }
 
-func (m *structator) parse() any {
+func (m *cp) parse() any {
 	if m.slice {
 		var data any
 		data = m.parseSlice()
@@ -110,17 +110,17 @@ func (m *structator) parse() any {
 	return m.parseStruct()
 }
 
-func (m *structator) parseSlice() []any {
+func (m *cp) parseSlice() []any {
 	var slice []any
 
 	for i := 0; i < m.source.Len(); i++ {
-		slice = append(slice, From(m.source.Index(i).Interface(), m.fieldsFocused...))
+		slice = append(slice, Copy(m.source.Index(i).Interface(), m.fieldsFocused...))
 	}
 
 	return slice
 }
 
-func (m *structator) parseStruct() any {
+func (m *cp) parseStruct() any {
 	for _, field := range m.fieldsFocused {
 		splitByPoint := strings.Split(field, ".")
 		if len(splitByPoint) > 1 {
