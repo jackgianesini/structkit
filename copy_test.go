@@ -18,13 +18,13 @@ type Bar struct {
 	Value string `json:"value"`
 }
 
-type StructatorTestSuite struct {
+type FromTestSuite struct {
 	suite.Suite
 }
 
-func (test *StructatorTestSuite) TestWithStruct() {
+func (test *FromTestSuite) TestWithStruct() {
 	payload := Foo{Value: "foo", Struct: Bar{Value: "bar"}}
-	result := From(payload, "Value", "Value", "Struct.Bar", "NotFound")
+	result := Copy(payload, "Value", "Value", "Struct.Bar", "NotFound")
 
 	val := reflect.ValueOf(result)
 	test.Equal(val.NumField(), 2)
@@ -35,9 +35,9 @@ func (test *StructatorTestSuite) TestWithStruct() {
 	log.Printf("%+v", result)
 }
 
-func (test *StructatorTestSuite) TestWithPtrStruct() {
+func (test *FromTestSuite) TestWithPtrStruct() {
 	payload := Foo{Value: "foo", Struct: Bar{Value: "bar"}}
-	result := From(&payload, "Value", "Value", "Struct.Bar", "NotFound")
+	result := Copy(&payload, "Value", "Value", "Struct.Bar", "NotFound")
 
 	val := reflect.ValueOf(result)
 	test.Equal(val.Elem().NumField(), 2)
@@ -48,9 +48,9 @@ func (test *StructatorTestSuite) TestWithPtrStruct() {
 	log.Printf("%+v", result)
 }
 
-func (test *StructatorTestSuite) TestWithSlice() {
+func (test *FromTestSuite) TestWithSlice() {
 	payload := []Foo{{Value: "foo", Struct: Bar{Value: "bar"}}}
-	result := From(payload, "Value", "Value", "Struct.Bar", "Slice.Value")
+	result := Copy(payload, "Value", "Value", "Struct.Bar", "Slice.Value")
 
 	rf := reflect.ValueOf(result)
 	test.Equal(rf.Index(0).Elem().FieldByName("Value").Interface(), "foo")
@@ -58,16 +58,16 @@ func (test *StructatorTestSuite) TestWithSlice() {
 	test.Equal(rf.Len(), 1)
 }
 
-func (test *StructatorTestSuite) TestWithStructInvalid() {
-	test.Nil(From(nil))
-	test.Equal(From("hello", "invalid"), "hello")
-	test.Equal(From([]string{"hello"}, "invalid"), []string{"hello"})
+func (test *FromTestSuite) TestWithStructInvalid() {
+	test.Nil(Copy(nil))
+	test.Equal(Copy("hello", "invalid"), "hello")
+	test.Equal(Copy([]string{"hello"}, "invalid"), []string{"hello"})
 }
 
-func (test *StructatorTestSuite) TestWithNoField() {
-	test.Equal(Foo{}, From(Foo{}))
+func (test *FromTestSuite) TestWithNoField() {
+	test.Equal(Foo{}, Copy(Foo{}))
 }
 
-func TestStructatorTestSuite(t *testing.T) {
-	suite.Run(t, new(StructatorTestSuite))
+func TestFromTestSuite(t *testing.T) {
+	suite.Run(t, new(FromTestSuite))
 }
