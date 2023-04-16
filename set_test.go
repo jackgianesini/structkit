@@ -116,6 +116,9 @@ func (test *SetTestSuite) TestSet() {
 	test.NoError(err)
 	test.Greater(len(buildCache.Comments), 0)
 	test.Equal("ReplaceAll", buildCache.Comments[0].Content)
+
+	err = Set(&buildCache, "Editor.Name", "John Doe")
+	test.NoError(err)
 }
 
 func TestSetTestSuite(t *testing.T) {

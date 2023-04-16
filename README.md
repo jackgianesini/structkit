@@ -1,4 +1,4 @@
-[![Go](https://github.com/lab210-dev/structkit/actions/workflows/go.yml/badge.svg)](https://github.com/lab210-dev/structkit/actions/workflows/coverage.yml)
+[![Go](https://github.com/lab210-dev/structkit/actions/workflows/coverage.yml/badge.svg)](https://github.com/lab210-dev/structkit/actions/workflows/coverage.yml)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/lab210-dev/structkit)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lab210-dev/structkit)](https://goreportcard.com/report/github.com/lab210-dev/structkit)
 [![codecov](https://codecov.io/gh/lab210-dev/structkit/branch/main/graph/badge.svg?token=3JRL5ZLSIH)](https://codecov.io/gh/lab210-dev/structkit)
@@ -13,6 +13,10 @@ StructKit is simple tool for :
   - Tag copy 
 - [x] Get value of specific field.
     - Slice
+    - Struct
+    - Pointer
+- [x] Set value of specific field.
+    - Slice (Append, Replace or Update)
     - Struct
     - Pointer
 - [x] Coverage
@@ -78,7 +82,66 @@ func main() {
 }
 ```
 
-### 💪Benchmark
+
+### Set
+
+```go
+package main
+
+import (
+    "github.com/lab210-dev/structkit"
+    "log"
+)
+
+type Foo struct {
+    Value   string
+    Struct  Bar
+    StructP *Bar
+    Slice   []Bar
+}
+
+type Bar struct {
+    Value string
+}
+
+func main() {
+    payload := Foo{}
+  
+    err := structkit.Set(&payload, "Value", "foo")
+    if err != nil {
+      panic(err)
+    }
+    log.Print(payload.Value) // foo
+  
+    err = structkit.Set(&payload, "Struct.Value", "bar")
+    if err != nil {
+      panic(err)
+    }
+    log.Print(payload.Struct.Value) // bar
+  
+    err = structkit.Set(&payload, "StructP.Value", "bar")
+    if err != nil {
+      panic(err)
+    }
+    log.Print(payload.StructP.Value) // bar
+  
+    err = structkit.Set(&payload, "Slice.[*]", Bar{Value: "bar"})
+    if err != nil {
+      panic(err)
+    }
+    log.Print(payload.Slice) // [{bar}]
+  
+    err = structkit.Set(&payload, "Slice.[0].Value", "bar updated")
+    if err != nil {
+      panic(err)
+    }
+    log.Print(payload.Slice) // [{bar updated}]
+}
+
+```
+
+
+### 💪 Benchmark
 
 ```bash
 goos: darwin

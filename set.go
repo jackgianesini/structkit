@@ -36,6 +36,14 @@ func Set(source any, field string, value any) (err error) {
 	set.fieldSplit = strings.Split(field, ".")
 	set.value = value
 
+	if set.kind == reflect.Ptr {
+		if set.source.IsZero() {
+			set.source.Set(reflect.New(set.source.Type().Elem()))
+		}
+		set.source = set.source.Elem()
+		set.kind = set.source.Kind()
+	}
+
 	if set.kind != reflect.Struct && set.kind != reflect.Slice {
 		return errors.New("source must be a struct or a slice of struct")
 	}
