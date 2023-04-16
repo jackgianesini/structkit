@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -43,15 +44,50 @@ func Set(source any, field string, value any) (err error) {
 }
 
 func (set *set) apply() (err error) {
-	/*	if set.kind == reflect.Slice {
+	if set.kind == reflect.Slice {
 		return set.applyToSlice()
-	}*/
+	}
 	return set.applyToStruct()
 }
 
-/*func (set *set) applyToSlice() (err error) {
-	return
-}*/
+func (set *set) applyToSlice() (err error) {
+	s := set.workingFieldName()
+
+	if s[0] != '[' {
+		return errors.New("invalid index opening (missing '[')")
+	}
+	s = s[1:]
+
+	if s[len(s)-1] != ']' {
+		return errors.New("invalid index closure (missing ']')")
+	}
+
+	s = s[:len(s)-1]
+
+	if s == "*" {
+		set.source.Set(reflect.Append(set.source, reflect.ValueOf(set.value)))
+		return
+	}
+
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return errors.New("invalid index")
+		}
+	}
+
+	index, _ := strconv.Atoi(s)
+
+	if index >= set.source.Len() {
+		return errors.New("index out of range")
+	}
+
+	if set.lenFieldSplit() == 1 {
+		set.source.Index(index).Set(reflect.ValueOf(set.value))
+		return
+	}
+
+	return Set(set.source.Index(index).Addr().Interface(), strings.Join(set.fieldSplit[1:], "."), set.value)
+}
 
 func (set *set) workingFieldName() string {
 	return set.fieldSplit[0]

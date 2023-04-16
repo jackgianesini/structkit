@@ -52,6 +52,30 @@ func (test *SetTestSuite) TestSetErr() {
 
 	err = Set(&buildCache, "TitlePtr", "Post Title")
 	test.Error(err)
+
+	err = Set(&buildCache, "Comments.[*", CommentSet{
+		Content: "Hello",
+	})
+	test.Error(err)
+	test.Equal(err.Error(), "invalid index closure (missing ']')")
+
+	err = Set(&buildCache, "Comments.*]", CommentSet{
+		Content: "Hello",
+	})
+	test.Error(err)
+	test.Equal(err.Error(), "invalid index opening (missing '[')")
+
+	err = Set(&buildCache, "Comments.[A]", CommentSet{
+		Content: "Hello",
+	})
+	test.Error(err)
+	test.Equal(err.Error(), "invalid index")
+
+	err = Set(&buildCache, "Comments.[1]", CommentSet{
+		Content: "Hello",
+	})
+	test.Error(err)
+	test.Equal(err.Error(), "index out of range")
 }
 
 func (test *SetTestSuite) TestSet() {
@@ -73,6 +97,25 @@ func (test *SetTestSuite) TestSet() {
 	err = Set(&buildCache, "Creator.Name", "John Doe")
 	test.NoError(err)
 	test.Equal("John Doe", buildCache.Creator.Name)
+
+	err = Set(&buildCache, "Comments.[*]", CommentSet{
+		Content: "Hello",
+	})
+	test.NoError(err)
+	test.Greater(len(buildCache.Comments), 0)
+	test.Equal("Hello", buildCache.Comments[0].Content)
+
+	err = Set(&buildCache, "Comments.[0].Content", "Updated")
+	test.NoError(err)
+	test.Greater(len(buildCache.Comments), 0)
+	test.Equal("Updated", buildCache.Comments[0].Content)
+
+	err = Set(&buildCache, "Comments.[0]", CommentSet{
+		Content: "ReplaceAll",
+	})
+	test.NoError(err)
+	test.Greater(len(buildCache.Comments), 0)
+	test.Equal("ReplaceAll", buildCache.Comments[0].Content)
 }
 
 func TestSetTestSuite(t *testing.T) {
