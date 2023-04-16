@@ -62,13 +62,13 @@ func (set *set) lenFieldSplit() int {
 }
 
 func (set *set) applyToStruct() (err error) {
-	if set.lenFieldSplit() > 1 {
-		return errors.New("not implemented yet")
-	}
-
 	workingField := set.source.FieldByName(set.workingFieldName())
 	if !workingField.IsValid() {
 		return fmt.Errorf("field %s not found", set.workingFieldName())
+	}
+
+	if set.lenFieldSplit() > 1 {
+		return Set(workingField.Addr().Interface(), strings.Join(set.fieldSplit[1:], "."), set.value)
 	}
 
 	value := reflect.ValueOf(set.value)

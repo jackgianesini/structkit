@@ -9,13 +9,12 @@ type PostSet struct {
 	Title    string
 	TitlePtr *string
 	Creator  UserSet
-	Editor   *User
+	Editor   *UserSet
 	Comments []CommentSet
 }
 
 type UserSet struct {
-	Name string
-
+	Name            string
 	unexportedField bool
 }
 
@@ -47,8 +46,6 @@ func (test *SetTestSuite) TestSetErr() {
 	test.Error(err)
 
 	buildCache := PostSet{Creator: UserSet{Name: "John Doe", unexportedField: false}}
-	err = Set(&buildCache, "Creator.Name", "John Doe")
-	test.Error(err)
 
 	err = Set(&buildCache, "unknown", "Post Title")
 	test.Error(err)
@@ -72,6 +69,10 @@ func (test *SetTestSuite) TestSet() {
 	err = Set(&buildCache, "TitlePtr", titlePtr)
 	test.NoError(err)
 	test.Equal(titlePtr, buildCache.TitlePtr)
+
+	err = Set(&buildCache, "Creator.Name", "John Doe")
+	test.NoError(err)
+	test.Equal("John Doe", buildCache.Creator.Name)
 }
 
 func TestSetTestSuite(t *testing.T) {
