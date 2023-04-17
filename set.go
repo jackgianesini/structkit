@@ -73,7 +73,11 @@ func (set *set) applyToSlice() (err error) {
 	s = s[:len(s)-1]
 
 	if s == "*" {
-		set.source.Set(reflect.Append(set.source, reflect.ValueOf(set.value)))
+		value := reflect.ValueOf(set.value)
+		if set.source.Type().Elem().Kind() == reflect.Struct && value.Kind() == reflect.Ptr {
+			value = value.Elem()
+		}
+		set.source.Set(reflect.Append(set.source, value))
 		return
 	}
 
@@ -90,7 +94,11 @@ func (set *set) applyToSlice() (err error) {
 	}
 
 	if set.lenFieldSplit() == 1 {
-		set.source.Index(index).Set(reflect.ValueOf(set.value))
+		value := reflect.ValueOf(set.value)
+		if set.source.Type().Elem().Kind() == reflect.Struct && value.Kind() == reflect.Ptr {
+			value = value.Elem()
+		}
+		set.source.Index(index).Set(value)
 		return
 	}
 
@@ -116,6 +124,11 @@ func (set *set) applyToStruct() (err error) {
 	}
 
 	value := reflect.ValueOf(set.value)
+	if workingField.Kind() == reflect.Ptr && value.Kind() != reflect.Ptr {
+		tmp := reflect.New(value.Type())
+		tmp.Elem().Set(value)
+		value = tmp
+	}
 
 	if workingField.Kind() != value.Kind() {
 		return errors.New("type mismatch")
