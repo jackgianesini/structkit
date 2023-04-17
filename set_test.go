@@ -50,7 +50,7 @@ func (test *SetTestSuite) TestSetErr() {
 	err = Set(&buildCache, "unknown", "Post Title")
 	test.Error(err)
 
-	err = Set(&buildCache, "TitlePtr", "Post Title")
+	err = Set(&buildCache, "Title", 1)
 	test.Error(err)
 
 	err = Set(&buildCache, "Comments.[*", CommentSet{
@@ -94,6 +94,10 @@ func (test *SetTestSuite) TestSet() {
 	test.NoError(err)
 	test.Equal(titlePtr, buildCache.TitlePtr)
 
+	err = Set(&buildCache, "TitlePtr", "Post Title")
+	test.NoError(err)
+	test.Equal(titlePtr, buildCache.TitlePtr)
+
 	err = Set(&buildCache, "Creator.Name", "John Doe")
 	test.NoError(err)
 	test.Equal("John Doe", buildCache.Creator.Name)
@@ -111,6 +115,13 @@ func (test *SetTestSuite) TestSet() {
 	test.Equal("Updated", buildCache.Comments[0].Content)
 
 	err = Set(&buildCache, "Comments.[0]", CommentSet{
+		Content: "ReplaceAll",
+	})
+	test.NoError(err)
+	test.Greater(len(buildCache.Comments), 0)
+	test.Equal("ReplaceAll", buildCache.Comments[0].Content)
+
+	err = Set(&buildCache, "Comments.[0]", &CommentSet{
 		Content: "ReplaceAll",
 	})
 	test.NoError(err)
