@@ -1,9 +1,9 @@
-[![Go](https://github.com/lab210-dev/structkit/actions/workflows/coverage.yml/badge.svg)](https://github.com/lab210-dev/structkit/actions/workflows/coverage.yml)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/lab210-dev/structkit)
-[![Go Report Card](https://goreportcard.com/badge/github.com/lab210-dev/structkit)](https://goreportcard.com/report/github.com/lab210-dev/structkit)
-[![codecov](https://codecov.io/gh/lab210-dev/structkit/branch/main/graph/badge.svg?token=3JRL5ZLSIH)](https://codecov.io/gh/lab210-dev/structkit)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lab210-dev/structkit/blob/main/LICENSE)
-[![Github tag](https://badgen.net/github/release/lab210-dev/structkit)](https://github.com/lab210-dev/structkit/releases)
+[![Go](https://github.com/kitstack/structkit/actions/workflows/coverage.yml/badge.svg)](https://github.com/kitstack/structkit/actions/workflows/coverage.yml)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kitstack/structkit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kitstack/structkit)](https://goreportcard.com/report/github.com/kitstack/structkit)
+[![codecov](https://codecov.io/gh/kitstack/structkit/branch/main/graph/badge.svg?token=3JRL5ZLSIH)](https://codecov.io/gh/kitstack/structkit)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kitstack/structkit/blob/main/LICENSE)
+[![Github tag](https://badgen.net/github/release/kitstack/structkit)](https://github.com/kitstack/structkit/releases)
 
 # 🚀 Overview
 
@@ -31,7 +31,7 @@ StructKit is simple tool for :
 package main
 
 import (
-    "github.com/lab210-dev/structkit"
+    "github.com/kitstack/structkit"
     "log"
 )
 
@@ -58,7 +58,7 @@ func main() {
 package main
 
 import (
-    "github.com/lab210-dev/structkit"
+    "github.com/kitstack/structkit"
     "log"
 )
 
@@ -89,7 +89,7 @@ func main() {
 package main
 
 import (
-    "github.com/lab210-dev/structkit"
+    "github.com/kitstack/structkit"
     "log"
 )
 
@@ -146,7 +146,7 @@ func main() {
 ```bash
 goos: darwin
 goarch: arm64
-pkg: github.com/lab210-dev/structkit
+pkg: github.com/kitstack/structkit
 BenchmarkGet
 BenchmarkGet-10                      	 6346312	       194.0 ns/op
 BenchmarkGetEmbeddedValue

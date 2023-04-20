@@ -1,4 +1,4 @@
-module github.com/lab210-dev/structkit
+module github.com/kitstack/structkit
 
 go 1.20
 

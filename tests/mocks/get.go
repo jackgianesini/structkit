@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com/lab210-dev/structkit"
+	"github.com/kitstack/structkit"
 	"github.com/stretchr/testify/mock"
 )
 

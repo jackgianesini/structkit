@@ -1,5 +1,5 @@
 package specs
 
-import "github.com/lab210-dev/structkit"
+import "github.com/kitstack/structkit"
 
 type Get func(source any, field string, opt ...*structkit.Option) any
